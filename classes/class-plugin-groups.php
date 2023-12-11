@@ -140,6 +140,8 @@ class Plugin_Groups {
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_item' ), 100 );
 		add_filter( 'self_admin_url', array( $this, 'append_group_to_self' ), 10, 3 );
 		add_filter( 'plugin_action_links', array( $this, 'append_group_to_actions' ) );
+		add_filter( 'manage_plugins_columns', [ $this, 'plugin_groups_column'] );
+		add_action( 'manage_plugins_custom_column', [ $this,'list_plugin_groups'], 10, 2 );
 	}
 
 	/**
@@ -1084,6 +1086,50 @@ class Plugin_Groups {
 		}
 
 		return $success;
+	}
+
+	/**
+	 * Adds a column on plugin page
+	 *
+	 * @param $columns
+	 * @return mixed
+	 */
+	public function plugin_groups_column( $columns ) {
+		$columns['plugin_groups'] = 'Plugin Groups';
+		return $columns;
+	}
+
+	/**
+	 * List each group the plugin is added to, in the column
+	 *
+	 * @param $column_name
+	 * @param $plugin_file
+	 * @return void
+	 */
+	public function list_plugin_groups( $column_name, $plugin_file ) {
+		if ( 'plugin_groups' !== $column_name ) {
+			return;
+		}
+
+		$group_links = [];
+
+		foreach ( $this->config['groups'] as $group ) {
+			foreach ( $group['plugins'] as $plugin ) {
+				if ( $plugin === $plugin_file ) {
+
+					$link_atts = array(
+						'href' => $this->get_nav_url( $group['id'] ),
+					);
+
+					$link = Utils::build_tag( 'a', $link_atts, $group['name'] );
+					$group_links[] = $link;
+					break;
+				}
+			}
+		}
+
+		$link = implode( ',', $group_links );
+		echo $link;
 	}
 
 	/**

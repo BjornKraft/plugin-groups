@@ -40,6 +40,9 @@ Yes it does! It has full support from network admin being able to set groups for
 
 == Changelog ==
 
+= 2.0.7 =
+- Added column in plugin view that list a plugins groups
+
 = 2.0.6 =
 - [Multisite] You can now set the main sites group management access. This allows the Group management to be disabled on all site, and keeps it in network admin only, if wanted.
 - Added a little notice that settings are saved.
